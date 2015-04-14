@@ -1,5 +1,5 @@
 {
-	"name": "jabli/barua",
+	"name": "jabli/brief",
 	"description": "smartemailing.cz PHP library",
 	"type": "library",
 	"require" : {
@@ -9,7 +9,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Barua\\": "src/"
+			"Brief\\": "src/"
 		}
 	}
 }
