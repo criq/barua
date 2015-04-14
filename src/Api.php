@@ -5,25 +5,31 @@ namespace Barua;
 class Api {
 
 	public $username;
-	public $token;
+	public $usertoken;
 	public $url = 'https://app.smartemailing.cz/api/v2';
 
-	public function __construct($username, $token, $url = null) {
+	public function __construct($username, $usertoken, $url = null) {
 		$this->username = $username;
-		$this->token = $token;
+		$this->usertoken = $usertoken;
 		if ($url) {
 			$this->url = $url;
 		}
 	}
 
-	public function post() {
-
+	public function createRequest() {
+		return new Request($this);
 	}
 
 	public function usersTestCredentials() {
-		$request = new Request($this);
+		return $this->createRequest()->setEndpoint('Users', 'testCredentials')->post();
+	}
 
-		var_dump($request);
+	public function usersGetId() {
+		return $this->createRequest()->setEndpoint('Users', 'getId')->post();
+	}
+
+	public function campaignsGetAll() {
+		return $this->createRequest()->setEndpoint('Campaigns', 'getAll')->post();
 	}
 
 }
