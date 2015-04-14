@@ -3,7 +3,8 @@
 	"description": "smartemailing.cz PHP library",
 	"type": "library",
 	"require" : {
-		"php": ">=5.3.0"
+		"php": ">=5.3.0",
+		"php-curl-class/php-curl-class": "@stable"
 	},
 	"autoload": {
 		"psr-4": {
