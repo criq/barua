@@ -24,6 +24,15 @@ class Request {
 		return $this;
 	}
 
+	public function setDetails($details) {
+		$details = $this->xml->addChild('details');
+		foreach ($details as $key => $value) {
+			$details->addChild($key, $value);
+		}
+
+		return $this;
+	}
+
 	public function getResponse() {
 		$curl = new \Curl\Curl();
 
@@ -40,6 +49,9 @@ class Request {
 			throw new Exceptions\HttpException($curl->error_message, $curl->http_status_code);
 		}
 		if ($curl->http_status_code === 400) {
+			throw new Exceptions\ResponseException($response->getError());
+		}
+		if ($response->isFailed()) {
 			throw new Exceptions\ResponseException($response->getError());
 		}
 
