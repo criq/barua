@@ -1,6 +1,6 @@
 <?php
 
-namespace Barua;
+namespace Brief;
 
 class Api {
 
@@ -58,14 +58,14 @@ class Api {
 		return $this->createRequest()->setEndpoint('Campaigns', 'getAll')->getResponse()->getList()->getAsModels('Campaign');
 	}
 
-	public function campaignsCreate($name, $title, $html, $text) {
+	public function campaignsCreate($name, $title, $htmlbody, $textbody) {
 		$request = $this->createRequest()
 			->setEndpoint('Campaigns', 'create')
 			->setDetails([
 				'name' => $name,
 				'title' => $title,
-				'htmlbody' => $html,
-				'textbody' => $text,
+				'htmlbody' => $htmlbody,
+				'textbody' => $textbody,
 			])
 			;
 

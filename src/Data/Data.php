@@ -1,6 +1,6 @@
 <?php
 
-namespace Barua\Data;
+namespace Brief\Data;
 
 class Data {
 

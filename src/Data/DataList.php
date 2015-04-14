@@ -1,6 +1,6 @@
 <?php
 
-namespace Barua\Data;
+namespace Brief\Data;
 
 class DataList extends Data implements \IteratorAggregate {
 
@@ -22,7 +22,7 @@ class DataList extends Data implements \IteratorAggregate {
 	}
 
 	public function getAsModels($model) {
-		$class = "\\Barua\\Models\\" . $model;
+		$class = "\\Brief\\Models\\" . $model;
 		$list = [];
 		foreach ($this as $item) {
 			$list[] = new $class($item);

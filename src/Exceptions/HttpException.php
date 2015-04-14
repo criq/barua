@@ -1,6 +1,6 @@
 <?php
 
-namespace Barua\Exceptions;
+namespace Brief\Exceptions;
 
 class HttpException extends \Exception {
 

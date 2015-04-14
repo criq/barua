@@ -1,6 +1,6 @@
 <?php
 
-namespace Barua\Models;
+namespace Brief\Models;
 
 class ContactList {
 
