@@ -33,6 +33,14 @@ class Response {
 		return false;
 	}
 
+	public function getString() {
+		return new Data\DataString($this->getData());
+	}
+
+	public function getList() {
+		return new Data\DataList($this->getData());
+	}
+
 	public function isSuccessful() {
 		return $this->getStatus() == 'SUCCESS';
 	}

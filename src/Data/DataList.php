@@ -1,0 +1,34 @@
+<?php
+
+namespace Barua\Data;
+
+class DataList extends Data implements \IteratorAggregate {
+
+	public function getList() {
+		if (isset($this->data->item)) {
+			$list = [];
+			foreach ($this->data->item as $i) {
+				$list[] = $i;
+			}
+
+			return $list;
+		}
+
+		return false;
+	}
+
+	public function getIterator() {
+		return new \ArrayIterator($this->getList());
+	}
+
+	public function getAsModels($model) {
+		$class = "\\Barua\\Models\\" . $model;
+		$list = [];
+		foreach ($this as $item) {
+			$list[] = new $class($item);
+		}
+
+		return $list;
+	}
+
+}

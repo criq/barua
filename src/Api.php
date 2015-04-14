@@ -21,15 +21,15 @@ class Api {
 	}
 
 	public function usersTestCredentials() {
-		return $this->createRequest()->setEndpoint('Users', 'testCredentials')->post();
+		return $this->createRequest()->setEndpoint('Users', 'testCredentials')->getResponse()->getString();
 	}
 
 	public function usersGetId() {
-		return $this->createRequest()->setEndpoint('Users', 'getId')->post();
+		return $this->createRequest()->setEndpoint('Users', 'getId')->getResponse()->getString();
 	}
 
 	public function campaignsGetAll() {
-		return $this->createRequest()->setEndpoint('Campaigns', 'getAll')->post();
+		return $this->createRequest()->setEndpoint('Campaigns', 'getAll')->getResponse()->getList()->getAsModels('Campaign');
 	}
 
 }
