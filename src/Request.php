@@ -34,28 +34,32 @@ class Request {
 	}
 
 	public function getResponse() {
-		$curl = new \Curl\Curl();
+		$client = new \GuzzleHttp\Client();
 
 		if (!isset($this->xml->details)) {
 			$this->xml->addChild('details');
 		}
 
-		$response = new Response($curl, $curl->post($this->api->url, $this->xml->asXml()));
+		try {
 
-		if ($curl->curl_error_code) {
-			throw new Exceptions\CurlException($curl->curl_error_message, $curl->curl_error_code);
-		}
-		if ($curl->http_status_code !== 200 && $curl->http_status_code !== 400) {
-			throw new Exceptions\HttpException($curl->error_message, $curl->http_status_code);
-		}
-		if ($curl->http_status_code === 400) {
-			throw new Exceptions\ResponseException($response->getError());
-		}
-		if ($response->isFailed()) {
-			throw new Exceptions\ResponseException($response->getError());
-		}
+			$response = new Response($client->post($this->api->url, [
+				'headers' => [
+					'Content-Type' => 'text/xml; charset=UTF8',
+				],
+				'body' => $this->xml->asXml(),
+			]));
 
-		return $response;
+			if ($response->isFailed()) {
+				throw new Exceptions\ResponseException($response->getError());
+			}
+
+			return $response;
+
+		} catch (\GuzzleHttp\Exception\ConnectException $e) {
+			throw new Exceptions\HttpException($e->getMessage(), $e->getCode());
+		} catch (\GuzzleHttp\Exception\ClientException $e) {
+			throw new Exceptions\ResponseException($e->getMessage(), $e->getCode());
+		}
 	}
 
 }

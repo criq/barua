@@ -4,30 +4,33 @@ namespace Brief;
 
 class Response {
 
-	public function __construct($curl, $response) {
-		$this->curl = $curl;
+	public $response;
+	public $xml;
+
+	public function __construct($response) {
 		$this->response = $response;
+		$this->xml = new \SimpleXMLElement($this->response->getBody()->getContents());
 	}
 
 	public function getStatus() {
-		if (isset($this->response->status)) {
-			return (string) $this->response->status;
+		if (isset($this->xml->status)) {
+			return (string) $this->xml->status;
 		}
 
 		return false;
 	}
 
 	public function getError() {
-		if (isset($this->response->errormessage)) {
-			return (string) $this->response->errormessage;
+		if (isset($this->xml->errormessage)) {
+			return (string) $this->xml->errormessage;
 		}
 
 		return false;
 	}
 
 	public function getData() {
-		if (isset($this->response->data)) {
-			return $this->response->data;
+		if (isset($this->xml->data)) {
+			return $this->xml->data;
 		}
 
 		return false;
