@@ -12,22 +12,6 @@ class Response {
 		$this->xml = new \SimpleXMLElement($this->response->getBody()->getContents());
 	}
 
-	public function getStatus() {
-		if (isset($this->xml->status)) {
-			return (string) $this->xml->status;
-		}
-
-		return false;
-	}
-
-	public function getError() {
-		if (isset($this->xml->errormessage)) {
-			return (string) $this->xml->errormessage;
-		}
-
-		return false;
-	}
-
 	public function getData() {
 		if (isset($this->xml->data)) {
 			return $this->xml->data;
@@ -44,12 +28,10 @@ class Response {
 		return new Data\DataList($this->getData());
 	}
 
-	public function isSuccessful() {
-		return $this->getStatus() == 'SUCCESS';
-	}
+	public function getModel($model) {
+		$class = "\\Brief\\Models\\" . $model;
 
-	public function isFailed() {
-		return $this->getStatus() == 'FAILED';
+		return new $class($this->getData());
 	}
 
 }

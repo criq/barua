@@ -24,9 +24,9 @@ class Request {
 		return $this;
 	}
 
-	public function setDetails($details) {
+	public function setDetails($array) {
 		$details = $this->xml->addChild('details');
-		foreach ($details as $key => $value) {
+		foreach ($array as $key => $value) {
 			$details->addChild($key, $value);
 		}
 
@@ -42,23 +42,19 @@ class Request {
 
 		try {
 
-			$response = new Response($client->post($this->api->url, [
+			$response = $client->post($this->api->url, [
 				'headers' => [
 					'Content-Type' => 'text/xml; charset=UTF8',
 				],
 				'body' => $this->xml->asXml(),
-			]));
+			]);
 
-			if ($response->isFailed()) {
-				throw new Exceptions\ResponseException($response->getError());
-			}
-
-			return $response;
+			return new Response($response);
 
 		} catch (\GuzzleHttp\Exception\ConnectException $e) {
 			throw new Exceptions\HttpException($e->getMessage(), $e->getCode());
 		} catch (\GuzzleHttp\Exception\ClientException $e) {
-			throw new Exceptions\ResponseException($e->getMessage(), $e->getCode());
+			throw new Exceptions\ResponseException((new \SimpleXMLElement($e->getResponse()->getBody()->getContents()))->errormessage);
 		}
 	}
 

@@ -17,28 +17,57 @@ class Api {
 	}
 
 	public function createRequest() {
-		return new Request($this);
+		$request = new Request($this);
+		if (count(func_get_args()) == 2) {
+			$request->setEndpoint(func_get_arg(0), func_get_arg(1));
+		}
+
+		return $request;
 	}
 
 	// User.
 
 	public function usersTestCredentials() {
-		return (string) $this->createRequest()->setEndpoint('Users', 'testCredentials')->getResponse()->getString();
+		return $this->createRequest('Users', 'testCredentials')
+			->getResponse()
+			->getString()
+			->getBoolean()
+			;
 	}
 
 	public function usersGetId() {
-		return (int) (string) $this->createRequest()->setEndpoint('Users', 'getId')->getResponse()->getString();
+		return $this->createRequest('Users', 'getId')
+			->getResponse()
+			->getString()
+			->getInt()
+			;
+	}
+
+	// Contacts.
+
+	public function contactsCreateUpdate($emailAddress) {
+		return $this->createRequest('Contacts', 'createupdate')
+			->setDetails([
+				'emailaddress' => $emailAddress,
+			])
+			->getResponse()
+			->getString()
+			->getBoolean()
+			;
 	}
 
 	// Contact lists.
 
 	public function contactListsGetAll() {
-		return $this->createRequest()->setEndpoint('ContactLists', 'getAll')->getResponse()->getList()->getAsModels('ContactList');
+		return $this->createRequest('ContactLists', 'getAll')
+			->getResponse()
+			->getList()
+			->getModels('ContactList')
+			;
 	}
 
 	public function contactListsCreate($name, $trackedDefaultFields, $sendername, $senderemail, $replyto, $publicname) {
-		$request = $this->createRequest()
-			->setEndpoint('ContactLists', 'create')
+		return $this->createRequest('ContactLists', 'create')
 			->setDetails([
 				'name' => $name,
 				'trackedDefaultFields' => serialize($trackedDefaultFields),
@@ -47,29 +76,33 @@ class Api {
 				'replyto' => $replyto,
 				'publicname' => $publicname,
 			])
+			->getResponse()
+			->getModel('ContactList')
 			;
-
-		return (int) (string) $request->getResponse()->getString();
 	}
 
 	// Campaigns.
 
 	public function campaignsGetAll() {
-		return $this->createRequest()->setEndpoint('Campaigns', 'getAll')->getResponse()->getList()->getAsModels('Campaign');
+		return $this->createRequest('Campaigns', 'getAll')
+			->getResponse()
+			->getList()
+			->getModels('Campaign')
+			;
 	}
 
 	public function campaignsCreate($name, $title, $htmlbody, $textbody) {
-		$request = $this->createRequest()
-			->setEndpoint('Campaigns', 'create')
+		return $this->createRequest('Campaigns', 'create')
 			->setDetails([
 				'name' => $name,
 				'title' => $title,
 				'htmlbody' => $htmlbody,
 				'textbody' => $textbody,
 			])
+			->getResponse()
+			->getString()
+			->getInt()
 			;
-
-		return (int) (string) $request->getResponse()->getString();
 	}
 
 }

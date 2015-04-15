@@ -21,7 +21,7 @@ class DataList extends Data implements \IteratorAggregate {
 		return new \ArrayIterator($this->getList());
 	}
 
-	public function getAsModels($model) {
+	public function getModels($model) {
 		$class = "\\Brief\\Models\\" . $model;
 		$list = [];
 		foreach ($this as $item) {
