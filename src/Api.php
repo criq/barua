@@ -18,11 +18,28 @@ class Api {
 
 	public function createRequest() {
 		$request = new Request($this);
+
+		// XmlRequest as the only argument.
+		if (count(func_get_args()) == 1 && func_get_arg(0) instanceof XmlRequest) {
+			$request->setXmlRequest(func_get_arg(0));
+		}
+
+		// Endpoint as only arguments.
 		if (count(func_get_args()) == 2) {
 			$request->setEndpoint(func_get_arg(0), func_get_arg(1));
 		}
 
+		// Endpoint and XmlRequest as only arguments.
+		if (count(func_get_args()) == 3 && func_get_arg(2) instanceof XmlRequest) {
+			$request->setXmlRequest(func_get_arg(2));
+			$request->setEndpoint(func_get_arg(0), func_get_arg(1));
+		}
+
 		return $request;
+	}
+
+	public function createXmlRequest() {
+		return new XmlRequest($this);
 	}
 
 	// User.
@@ -45,11 +62,16 @@ class Api {
 
 	// Contacts.
 
-	public function contactsCreateUpdate($emailAddress) {
-		return $this->createRequest('Contacts', 'createupdate')
-			->setDetails([
-				'emailaddress' => $emailAddress,
-			])
+	public function contactsCreateUpdate($xmlRequest) {
+		return $this->createRequest('Contacts', 'createupdate', $xmlRequest)
+			->getResponse()
+			->getString()
+			->getBoolean()
+			;
+	}
+
+	public function contactsCreateUpdateBatch($xmlRequest) {
+		return $this->createRequest('Contacts', 'createupdateBatch', $xmlRequest)
 			->getResponse()
 			->getString()
 			->getBoolean()
@@ -102,6 +124,16 @@ class Api {
 			->getResponse()
 			->getString()
 			->getInt()
+			;
+	}
+
+	// Custom fields.
+
+	public function customFieldsGetAll() {
+		return $this->createRequest('CustomFields', 'getAll')
+			->getResponse()
+			->getList()
+			->getModels('CustomField')
 			;
 	}
 
