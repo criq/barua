@@ -84,7 +84,7 @@ class Api {
 		return $this->createRequest('ContactLists', 'getAll')
 			->getResponse()
 			->getList()
-			->getModels('ContactList')
+			->getModels($this, 'ContactList')
 			;
 	}
 
@@ -99,8 +99,18 @@ class Api {
 				'publicname' => $publicname,
 			])
 			->getResponse()
-			->getModel('ContactList')
+			->getModel($this, 'ContactList')
 			;
+	}
+
+	public function contactListsMake($name, $trackedDefaultFields, $sendername, $senderemail, $replyto, $publicname) {
+		foreach ($this->contactListsGetAll() as $contactList) {
+			if ($contactList->name == $name) {
+				return $contactList;
+			}
+		}
+
+		return $this->contactListsCreate($name, $trackedDefaultFields, $sendername, $senderemail, $replyto, $publicname);
 	}
 
 	// Campaigns.
@@ -109,7 +119,17 @@ class Api {
 		return $this->createRequest('Campaigns', 'getAll')
 			->getResponse()
 			->getList()
-			->getModels('Campaign')
+			->getModels($this, 'Campaign')
+			;
+	}
+
+	public function campaignsGetOne($id) {
+		return $this->createRequest('Campaigns', 'getOne')
+			->setDetails([
+				'id' => $id,
+			])
+			->getResponse()
+			->getModel($this, 'Campaign')
 			;
 	}
 
@@ -118,7 +138,7 @@ class Api {
 			->setDetails([
 				'name' => $name,
 				'title' => $title,
-				'htmlbody' => $htmlbody,
+				'htmlbody' => base64_encode($htmlbody),
 				'textbody' => $textbody,
 			])
 			->getResponse()
@@ -127,14 +147,55 @@ class Api {
 			;
 	}
 
+	public function campaignsUpdate($id, $name, $title, $htmlbody, $textbody) {
+		return $this->createRequest('Campaigns', 'update')
+			->setDetails([
+				'id' => $id,
+				'name' => $name,
+				'title' => $title,
+				'htmlbody' => base64_encode($htmlbody),
+				'textbody' => $textbody,
+			])
+			->getResponse()
+			->getString()
+			->getInt()
+			;
+	}
+
+	public function campaignsMake($name, $title, $htmlbody, $textbody) {
+		foreach ($this->campaignsGetAll() as $campaign) {
+			if ($campaign->name == $name) {
+				$id = $campaign->id;
+				$campaign->update($name, $title, $htmlbody, $textbody);
+				break;
+			}
+		}
+
+		if (!isset($id)) {
+			$id = $this->campaignsCreate($name, $title, $htmlbody, $textbody);
+		}
+
+		return $this->campaignsGetOne($id);
+	}
+
 	// Custom fields.
 
 	public function customFieldsGetAll() {
 		return $this->createRequest('CustomFields', 'getAll')
 			->getResponse()
 			->getList()
-			->getModels('CustomField')
+			->getModels($this, 'CustomField')
 			;
+	}
+
+	public function customFieldsGetOneByName($name) {
+		foreach ($this->customFieldsGetAll() as $customField) {
+			if ($customField->name == $name) {
+				return $customField;
+			}
+		}
+
+		return false;
 	}
 
 }

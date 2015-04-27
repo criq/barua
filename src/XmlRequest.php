@@ -26,7 +26,10 @@ class XmlRequest {
 			$this->xml->addChild('details');
 		}
 
-		return $this->xml->asXml();
+		$xml = $this->xml->asXml();
+		$xml = html_entity_decode($xml, ENT_NOQUOTES, 'UTF-8');
+
+		return $xml;
 	}
 
 }

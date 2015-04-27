@@ -28,10 +28,10 @@ class Response {
 		return new Data\DataList($this->getData());
 	}
 
-	public function getModel($model) {
+	public function getModel($api, $model) {
 		$class = "\\Brief\\Models\\" . $model;
 
-		return new $class($this->getData());
+		return new $class($api, $this->getData());
 	}
 
 }

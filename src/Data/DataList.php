@@ -21,11 +21,11 @@ class DataList extends Data implements \IteratorAggregate {
 		return new \ArrayIterator($this->getList());
 	}
 
-	public function getModels($model) {
+	public function getModels($api, $model) {
 		$class = "\\Brief\\Models\\" . $model;
 		$list = [];
 		foreach ($this as $item) {
-			$list[] = new $class($item);
+			$list[] = new $class($api, $item);
 		}
 
 		return $list;
