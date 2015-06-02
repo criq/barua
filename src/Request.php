@@ -37,24 +37,17 @@ class Request {
 	}
 
 	public function getResponse() {
-		$client = new \GuzzleHttp\Client();
+		$curl = new \Curl\Curl();
+		$curl->setHeader('Content-Type', 'text/xml; charset=UTF8');
+		$response = $curl->post($this->api->url, $this->xmlRequest->asXml());
 
-		try {
-
-			$response = $client->post($this->api->url, [
-				'headers' => [
-					'Content-Type' => 'text/xml; charset=UTF8',
-				],
-				'body' => $this->xmlRequest->asXml(),
-			]);
-
-			return new Response($response);
-
-		} catch (\GuzzleHttp\Exception\ConnectException $e) {
-			throw new Exceptions\HttpException($e->getMessage(), $e->getCode());
-		} catch (\GuzzleHttp\Exception\ClientException $e) {
-			throw new Exceptions\ResponseException((new \SimpleXMLElement($e->getResponse()->getBody()->getContents()))->errormessage);
+		if ($curl->curl_error) {
+			throw new Exceptions\CurlException($curl->curl_error_message, $curl->curl_error_code);
+		} elseif ($curl->http_error) {
+			throw new Exceptions\HttpException($curl->http_error_message, $curl->http_status_code);
 		}
+
+		return new Response($response);
 	}
 
 }

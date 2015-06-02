@@ -5,16 +5,14 @@ namespace Brief;
 class Response {
 
 	public $response;
-	public $xml;
 
 	public function __construct($response) {
 		$this->response = $response;
-		$this->xml = new \SimpleXMLElement($this->response->getBody()->getContents());
 	}
 
 	public function getData() {
-		if (isset($this->xml->data)) {
-			return $this->xml->data;
+		if (isset($this->response->data)) {
+			return $this->response->data;
 		}
 
 		return false;

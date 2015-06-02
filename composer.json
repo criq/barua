@@ -4,7 +4,7 @@
 	"type": "library",
 	"require" : {
 		"php": ">=5.3.0",
-		"guzzlehttp/guzzle": "@stable"
+		"php-curl-class/php-curl-class": "@stable"
 	},
 	"autoload": {
 		"psr-4": {
