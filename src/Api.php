@@ -198,4 +198,27 @@ class Api {
 		return false;
 	}
 
+	// Autoresponders.
+
+	public function autorespondersGetAll() {
+		return $this->createRequest('Autoresponders', 'getAll')
+			->getResponse()
+			->getList()
+			->getModels($this, 'Autoresponder')
+			;
+	}
+
+	// Autoresponder stats.
+
+	public function autoresponderStatsGetBounces($id) {
+		return $this->createRequest('AutoresponderStats', 'getBounces')
+			->setDetails([
+				'id' => $id,
+			])
+			->getResponse()
+			->getList()
+			->getModels($this, 'Bounce')
+			;
+	}
+
 }
