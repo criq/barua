@@ -20,7 +20,17 @@ class Bounce extends \Brief\Model {
 		$this->message      = (string) trim($data->message);
 		$this->time         = (string) $data->time;
 		$this->emailAddress = (string) $data->emailaddress;
+	}
 
+	public function getHash() {
+		return sha1(\Katu\Utils\JSON::encodeStandard([
+			(int) $this->contactId,
+			(int) $this->type,
+			(string) $this->reason,
+			(string) $this->message,
+			(string) $this->time,
+			(string) $this->emailAddress,
+		]));
 	}
 
 }
