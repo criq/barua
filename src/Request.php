@@ -7,9 +7,17 @@ class Request {
 	public $api;
 	public $xmlRequest;
 
+	public $timeout = 30;
+
 	public function __construct($api) {
 		$this->api = $api;
 		$this->xmlRequest = new XmlRequest($api);
+
+		return $this;
+	}
+
+	public function setTimeout($timeout) {
+		$this->timeout = $timeout;
 
 		return $this;
 	}
@@ -39,7 +47,8 @@ class Request {
 	public function getResponse() {
 		$curl = new \Curl\Curl();
 		$curl->setHeader('Content-Type', 'text/xml; charset=UTF8');
-		$response = $curl->post($this->api->url, $this->xmlRequest->asXml());
+		$curl->setTimeout($this->timeout);
+		$response = $curl->post($this->api->apiUrl, $this->xmlRequest->asXml());
 
 		if ($curl->curl_error) {
 			throw new Exceptions\CurlException($curl->curl_error_message, $curl->curl_error_code);

@@ -6,14 +6,23 @@ class Api {
 
 	public $username;
 	public $usertoken;
-	public $url = 'https://app.smartemailing.cz/api/v2';
 
-	public function __construct($username, $usertoken, $url = null) {
+	public $apiUrl = 'https://app.smartemailing.cz/api/v2';
+	public $csvUrl = 'https://app.smartemailing.cz/api/csv';
+
+	public function __construct($username, $usertoken) {
 		$this->username = $username;
 		$this->usertoken = $usertoken;
-		if ($url) {
-			$this->url = $url;
-		}
+	}
+
+	public function getCsvUrl($endpoint, $params = []) {
+		return \Katu\Types\TUrl::make(implode('/', [
+			$this->csvUrl,
+			$endpoint,
+		]), array_merge([
+			'username' => $this->username,
+			'usertoken' => $this->usertoken,
+		], $params));
 	}
 
 	public function createRequest() {
@@ -78,6 +87,17 @@ class Api {
 			;
 	}
 
+	public function contactsDeleteByEmailAddress($emailAddress) {
+		return $this->createRequest('Contacts', 'delete')
+			->setDetails([
+				'emailaddress' => $emailAddress,
+			])
+			->getResponse()
+			->getString()
+			->getBoolean()
+			;
+	}
+
 	// Contact lists.
 
 	public function contactListsGetAll() {
@@ -86,6 +106,16 @@ class Api {
 			->getList()
 			->getModels($this, 'ContactList')
 			;
+	}
+
+	public function contactListsGetByName($name) {
+		foreach ($this->contactListsGetAll() as $contactList) {
+			if ($contactList->name == $name) {
+				return $contactList;
+			}
+		}
+
+		return false;
 	}
 
 	public function contactListsCreate($name, $trackedDefaultFields, $sendername, $senderemail, $replyto, $publicname) {
@@ -113,6 +143,17 @@ class Api {
 		return $this->contactListsCreate($name, $trackedDefaultFields, $sendername, $senderemail, $replyto, $publicname);
 	}
 
+	public function contactListsGetContacts($id) {
+		return $this->createRequest('ContactLists', 'getContacts')
+			->setDetails([
+				'id' => $id,
+			])
+			->getResponse()
+			->getList()
+			->getModels($this, 'Contact')
+			;
+	}
+
 	// Campaigns.
 
 	public function campaignsGetAll() {
@@ -131,6 +172,16 @@ class Api {
 			->getResponse()
 			->getModel($this, 'Campaign')
 			;
+	}
+
+	public function campaignsGetByName($name) {
+		foreach ($this->campaignsGetAll() as $campaign) {
+			if ($campaign->name == $name) {
+				return $campaign;
+			}
+		}
+
+		return false;
 	}
 
 	public function campaignsCreate($name, $title, $htmlbody, $textbody) {
@@ -206,6 +257,16 @@ class Api {
 			->getList()
 			->getModels($this, 'Autoresponder')
 			;
+	}
+
+	public function autorespondersGetByName($name) {
+		foreach ($this->autorespondersGetAll() as $autoresponder) {
+			if ($autoresponder->name == $name) {
+				return $autoresponder;
+			}
+		}
+
+		return false;
 	}
 
 	// Autoresponder stats.

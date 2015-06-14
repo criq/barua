@@ -21,4 +21,24 @@ class Autoresponder extends \Brief\Model {
 			;
 	}
 
+	public function getSentReport() {
+		$url = $this->api->getCsvUrl('autoresponder-sent', [
+			'jobid' => $this->id,
+		]);
+
+		return \Katu\Utils\CSV::readToArray(\Katu\Utils\Tmp::save('autoresponderGetSentReport.csv', (new \Curl\Curl)->get($url)), [
+			'delimiter' => ';',
+		]);
+	}
+
+	public function getBouncedReport() {
+		$url = $this->api->getCsvUrl('autoresponder-bounced', [
+			'jobid' => $this->id,
+		]);
+
+		return \Katu\Utils\CSV::readToArray(\Katu\Utils\Tmp::save('autoresponderGetBouncedReport.csv', (new \Curl\Curl)->get($url)), [
+			'delimiter' => ';',
+		]);
+	}
+
 }

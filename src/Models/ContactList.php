@@ -14,4 +14,8 @@ class ContactList extends \Brief\Model {
 		$this->name  = (string) $data->name;
 	}
 
+	public function getContacts() {
+		return $this->api->contactListsGetContacts($this->id);
+	}
+
 }
