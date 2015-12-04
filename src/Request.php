@@ -50,10 +50,10 @@ class Request {
 		$curl->setTimeout($this->timeout);
 		$response = $curl->post($this->api->apiUrl, $this->xmlRequest->asXml());
 
-		if ($curl->curl_error) {
-			throw new Exceptions\CurlException($curl->curl_error_message, $curl->curl_error_code);
-		} elseif ($curl->http_error) {
-			throw new Exceptions\HttpException($curl->http_error_message, $curl->http_status_code);
+		if ($curl->curlError) {
+			throw new Exceptions\CurlException($curl->curlErrorMessage, $curl->curlErrorCode);
+		} elseif ($curl->httpError) {
+			throw new Exceptions\HttpException($curl->httpErrorMessage, $curl->httpStatusCode);
 		}
 
 		return new Response($response);
