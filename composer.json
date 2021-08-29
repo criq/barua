@@ -1,5 +1,5 @@
 {
-	"name": "jabli/brief",
+	"name": "criq/brief",
 	"description": "smartemailing.cz PHP library",
 	"type": "library",
 	"require" : {
